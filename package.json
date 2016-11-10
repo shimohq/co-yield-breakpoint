@@ -1,0 +1,37 @@
+{
+  "name": "co-yield-breakpoint",
+  "version": "1.0.0",
+  "description": "Add breakpoints around `yield` expression.",
+  "main": "index.js",
+  "keywords": [
+    "co",
+    "yield",
+    "breakpoint"
+  ],
+  "author": {
+    "name": "nswbmw",
+    "email": "nswbmw1992@gmail.com"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=4"
+  },
+  "dependencies": {
+    "debug": "2.3.2",
+    "escodegen": "1.8.1",
+    "esprima": "3.1.1",
+    "glob": "7.1.1",
+    "is-generator": "1.0.3",
+    "lodash": "4.16.6",
+    "shimmer": "1.1.0",
+    "source-map-support": "0.4.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nswbmw/co-yield-breakpoint"
+  },
+  "devDependencies": {
+    "co": "4.6.0",
+    "mongolass": "2.3.2"
+  }
+}
