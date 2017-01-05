@@ -11,6 +11,8 @@ co(function* () {
     age: 18
   });
 
-  const users = yield mongolass.model('users').find();
+  const users = yield mongolass.model('users').find().then(() => {
+    throw new Error('something broken!')
+  });
   console.log('users: %j', users);
 }).catch(e => console.error(e.stack));

@@ -46,7 +46,14 @@ module.exports = function (opt) {
   // add global logger
   global[loggerName] = function *(ctx, fn, fnStr, filename) {
     const start = Date.now();
-    const result = yield fn.call(ctx);
+    let result;
+    let error;
+
+    try {
+      result = yield fn.call(ctx);
+    } catch (e) {
+      error = e;
+    }
     const timestamp = new Date();
     const record = {
       filename,
@@ -55,10 +62,17 @@ module.exports = function (opt) {
       result,
       take: timestamp - start
     };
+    if (error) {
+      record.error = error;
+    }
     debug(record);
-
     store.save(record);
-    return result;
+
+    if (error) {
+      throw error;
+    } else {
+      return result;
+    }
   };
 
   let filenames = [];
