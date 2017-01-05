@@ -21,7 +21,6 @@ const glob = require('glob');
 const esprima = require('esprima');
 const shimmer = require('shimmer');
 const escodegen = require('escodegen');
-const isGenerator = require('is-generator');
 const debug = require('debug')('co-yield-breakpoint');
 
 const defaultOpt = {
@@ -47,10 +46,7 @@ module.exports = function (opt) {
   // add global logger
   global[loggerName] = function *(ctx, fn, fnStr, filename) {
     const start = Date.now();
-    let result = yield fn.call(ctx);
-    if (isGenerator(result) || _.isPlainObject(result) || _.isArray(result)) {
-      result = yield result;
-    }
+    const result = yield fn.call(ctx);
     const timestamp = new Date();
     const record = {
       filename,
@@ -115,7 +111,7 @@ module.exports = function (opt) {
           deep: true
         };
 
-        if (node.hasOwnProperty('type') && node.type === 'YieldExpression') {
+        if (node.hasOwnProperty('type') && node.type === 'YieldExpression' && !node.__skip) {
           const codeLine = node.loc.start;
           const __argument = node.argument;
           const __expressionStr = escodegen.generate(__argument);
@@ -123,7 +119,7 @@ module.exports = function (opt) {
             global.${loggerName}(
               this,
               function*(){
-                return ${__expressionStr}
+                return yield ${__expressionStr}
               },
               ${JSON.stringify(__expressionStr)},
               ${JSON.stringify(filename + ':' + codeLine.line + ':' + codeLine.column)}
@@ -137,9 +133,11 @@ module.exports = function (opt) {
             try {
               node.argument = esprima.parse(expressionStr, { loc: true }).body[0].expression;
               try {
+                // skip process this YieldExpression
+                node.argument.arguments[1].body.body[0].argument.__skip = true;
                 // try correct loc
-                node.argument.arguments[1].callee.object.body.body[0].argument = __argument;
-              } catch (e) {/* empty */}
+                node.argument.arguments[1].body.body[0].argument.argument = __argument;
+              } catch (e) {/* ignore */}
             } catch (e) {
               console.error('cannot parse expression:');
               console.error(expressionStr);
