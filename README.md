@@ -52,13 +52,13 @@ const mongolass = new Mongolass();
 mongolass.connect('mongodb://localhost:27017/test');
 co(function* () {
   yield global.logger(this, function* () {
-    return mongolass.model('users').create({
+    return yield mongolass.model('users').create({
       name: 'xx',
       age: 18
     });
   }, 'mongolass.model(\'users\').create({\n    name: \'xx\',\n    age: 18\n})', '/Users/nswbmw/node/co-yield-breakpoint/example/foo.js:9:2');
   const users = yield global.logger(this, function* () {
-    return mongolass.model('users').find();
+    return yield mongolass.model('users').find();
   }, 'mongolass.model(\'users\').find()', '/Users/nswbmw/node/co-yield-breakpoint/example/foo.js:14:16');
   console.log('users: %j', users);
 }).catch(e => console.error(e.stack));
@@ -70,7 +70,7 @@ As you see, co-yield-breakpoint wrap `YieldExpression` with:
 global.logger(
   this,
   function*(){
-    return YieldExpression
+    return yield YieldExpression
   },
   YieldExpressionString,
   filename
