@@ -114,7 +114,7 @@ module.exports = function (opt) {
       } catch (e) {
         console.error('cannot generate code for file: %s', filename);
         console.error(e.stack);
-        process.exit(1);
+        throw e;
       }
       debug('file %s regenerate codes:\n%s', filename, content.code);
 
