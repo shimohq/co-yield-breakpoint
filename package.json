@@ -1,6 +1,6 @@
 {
   "name": "co-yield-breakpoint",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Add breakpoints around `yield` expression.",
   "main": "index.js",
   "keywords": [
